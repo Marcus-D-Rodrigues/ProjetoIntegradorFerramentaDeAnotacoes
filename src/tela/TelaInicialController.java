@@ -96,10 +96,20 @@ public class TelaInicialController implements Initializable {
 
     @FXML
     private void editar(ActionEvent event) {
+   
     }
 
     @FXML
     private void excluir(ActionEvent event) {
+        ItemNota itemSelecionado = tableNotas.getSelectionModel().getSelectedItem();
+
+        for ( int i = 0; i < listaNotas.size(); i++) {
+            ItemNota itemLista = listaNotas.get(i);
+            if (itemLista.id == itemSelecionado.id) {
+                listaNotas.remove(i);
+                break;
+            }
+        }
     }
 
 }
