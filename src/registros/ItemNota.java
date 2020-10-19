@@ -17,5 +17,4 @@ public class ItemNota {
     public String getCategoria() {
         return categoria;
     }
-
 }
