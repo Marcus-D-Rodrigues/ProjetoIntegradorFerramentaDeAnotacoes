@@ -17,4 +17,14 @@ public class ItemNota {
     public String getCategoria() {
         return categoria;
     }
+
+    public void setNota(String newNota) {
+        this.nota = newNota;
+    }
+
+    public void setCategoria(String newCategoria) {
+        this.categoria = newCategoria;
+    }
+    
+    
 }

@@ -11,15 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -32,7 +34,7 @@ public class TelaInicialController implements Initializable {
     @FXML
     private AnchorPane tabela;
     @FXML
-    private TextField nota;
+    private TextArea nota;
     @FXML
     private TextField categoria;
     @FXML
@@ -54,26 +56,42 @@ public class TelaInicialController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         colunaNota.setCellValueFactory(new PropertyValueFactory("nota"));
         colunaCategoria.setCellValueFactory(new PropertyValueFactory("categoria"));
-
+        
+        tableNotas.setEditable(true);
+        colunaNota.setCellFactory(TextFieldTableCell.forTableColumn());
+        colunaCategoria.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
     @FXML
     private void limpar(ActionEvent event) {
+        nota.clear();
+        categoria.clear();
     }
 
     @FXML
     private void salvar(ActionEvent event) {
+        
+        if ("".equals(nota.getText()) || categoria.getText() == ""){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Infomações");
+            alert.setHeaderText("Preencha todos os campos");
+            alert.showAndWait();
+        } else {
+            ItemNota item = new ItemNota();
 
-        ItemNota item = new ItemNota();
+            item.nota = nota.getText();
+            item.categoria = categoria.getText();
 
-        item.nota = nota.getText();
-        item.categoria = categoria.getText();
+            item.id = totalItens;
 
-        item.id = totalItens;
+            totalItens++;
 
-        totalItens++;
+            listaNotas.add(item);
 
-        listaNotas.add(item);
+            tableNotas.setItems(FXCollections.observableArrayList(listaNotas));
+            nota.clear();
+            categoria.clear();
+        }
     }
 
     @FXML
@@ -93,12 +111,7 @@ public class TelaInicialController implements Initializable {
         }
         
     }
-
-    @FXML
-    private void editar(ActionEvent event) {
-   
-    }
-
+    
     @FXML
     private void excluir(ActionEvent event) {
         ItemNota itemSelecionado = tableNotas.getSelectionModel().getSelectedItem();
@@ -110,6 +123,18 @@ public class TelaInicialController implements Initializable {
                 break;
             }
         }
+        tableNotas.setItems(FXCollections.observableArrayList(listaNotas));
     }
 
+    @FXML
+    private void editNota(TableColumn.CellEditEvent<ItemNota, String> event) {
+        ItemNota edit = tableNotas.getSelectionModel().getSelectedItem();
+        edit.setNota(event.getNewValue());
+    }
+
+    @FXML
+    private void editCategoria(TableColumn.CellEditEvent<ItemNota, String> event) {
+        ItemNota edit = tableNotas.getSelectionModel().getSelectedItem();
+        edit.setCategoria(event.getNewValue());
+    }
 }
